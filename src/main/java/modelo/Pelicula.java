@@ -2,26 +2,57 @@ package modelo;
 
 public class Pelicula {
 	private int id_pelicula;
+	private int id_categoria;
 	private String titulo;
 	private String descripcion;
 	private int duracion;
 	private String url_portada;
 	private int anio;
-	private double precio_alquiler;
+	private String nombreCategoria;
+
 	
-	public Pelicula(int id_pelicula, String titulo, String descripcion, int duracion, String url_portada, int anio,
-			double precio_alquiler) {
-		this.id_pelicula = id_pelicula;
+	public Pelicula() {
+	}
+
+	public Pelicula(int id_categoria, String titulo, String descripcion, int duracion, String url_portada, int anio) {
+		this.id_categoria = id_categoria;
 		this.titulo = titulo;
 		this.descripcion = descripcion;
 		this.duracion = duracion;
 		this.url_portada = url_portada;
 		this.anio = anio;
-		this.precio_alquiler = precio_alquiler;
+	}
+
+	public Pelicula(int id_pelicula,int id_categoria, String titulo, String descripcion, int duracion, String url_portada, int anio) {
+		this.id_pelicula = id_pelicula;
+		this.id_categoria = id_categoria; 
+		this.titulo = titulo;
+		this.descripcion = descripcion;
+		this.duracion = duracion;
+		this.url_portada = url_portada;
+		this.anio = anio;
 	}
 
 	public int getId_pelicula() {
 		return id_pelicula;
+	}
+	
+
+	public String getNombreCategoria() {
+		return nombreCategoria;
+	}
+
+	public void setNombreCategoria(String nombreCategoria) {
+		this.nombreCategoria = nombreCategoria;
+	}
+
+
+	public int getId_categoria() {
+		return id_categoria;
+	}
+
+	public void setId_categoria(int id_categoria) {
+		this.id_categoria = id_categoria;
 	}
 
 	public String getTitulo() {
@@ -42,10 +73,6 @@ public class Pelicula {
 
 	public int getAnio() {
 		return anio;
-	}
-
-	public double getPrecio_alquiler() {
-		return precio_alquiler;
 	}
 
 	public void setId_pelicula(int id_pelicula) {
@@ -70,10 +97,6 @@ public class Pelicula {
 
 	public void setAnio(int anio) {
 		this.anio = anio;
-	}
-
-	public void setPrecio_alquiler(double precio_alquiler) {
-		this.precio_alquiler = precio_alquiler;
 	}
 	
 	

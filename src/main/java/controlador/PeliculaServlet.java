@@ -3,7 +3,10 @@ package controlador;
 import java.awt.datatransfer.SystemFlavorMap;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +14,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dao.CategoriaDAO;
+import dao.CategoriaDAOImpl;
+import dao.PeliculaDAO;
+import dao.PeliculaDAOImpl;
+import modelo.Categoria;
 import modelo.Pelicula;
 
 /**
@@ -19,8 +27,9 @@ import modelo.Pelicula;
 @WebServlet("/PeliculaServlet")
 public class PeliculaServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final List<Pelicula> peliculas = new ArrayList<>();
-	private static int idCounter =1;   
+	PeliculaDAO peliculaDao = new PeliculaDAOImpl();
+	CategoriaDAO categoriaDao = new CategoriaDAOImpl();
+
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -33,30 +42,47 @@ public class PeliculaServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		request.setAttribute("listaPeliculas", peliculas);
-		request.getRequestDispatcher("listaPeliculas.jsp").forward(request, response);
+		
+		 List<Pelicula> peliculas = peliculaDao.listar(); // método que hace JOIN con categoría
+
+	    peliculas.sort(Comparator.comparing(Pelicula::getNombreCategoria));
+
+		    request.setAttribute("peliculas", peliculas);
+		    request.getRequestDispatcher("inicio.jsp").forward(request, response);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		System.out.println("Se ejecuto el POST");
-		System.out.println(request.getParameter("titulo"));
-		//int id_pelicula =Integer.parseInt(request.getParameter("id_pelicula"));
-		String titulo = request.getParameter("titulo");
-		String descripcion = request.getParameter("descripcion");
-		int duracion =Integer.parseInt( request.getParameter("duracion"));
-		String url_portada = request.getParameter("url_portada");
-		int anio = Integer.parseInt(request.getParameter("anio"));
-		double precio_alquiler =Double.parseDouble(request.getParameter("precio_alquiler"));
-
-		Pelicula nuevaPelicula = new Pelicula(idCounter,titulo,descripcion,duracion,url_portada,anio,precio_alquiler);
-		peliculas.add(nuevaPelicula);
-		idCounter++;
-		response.sendRedirect("PeliculaServlet");
+		String accion = request.getParameter("accion");
+	    
+	    int id_categoria = Integer.parseInt(request.getParameter("id_categoria"));
+	    String titulo = request.getParameter("titulo");
+	    String descripcion = request.getParameter("descripcion");
+	    int duracion = Integer.parseInt(request.getParameter("duracion"));
+	    String url_portada = request.getParameter("url_portada");
+	    int anio = Integer.parseInt(request.getParameter("anio"));
+	    
+	    if ("agregar".equals(accion)) {
+	        Pelicula nuevaPelicula = new Pelicula(id_categoria, titulo, descripcion,
+	                                               duracion, url_portada, anio);
+	        peliculaDao.agregar(nuevaPelicula);
+	        
+	    } else if ("actualizar".equals(accion)) {
+	        int id_pelicula = Integer.parseInt(request.getParameter("id_pelicula"));
+	        
+	        System.out.println("Actualizando película ID: " + id_pelicula);
+	        System.out.println("Con categoría ID: " + id_categoria);
+	        
+	        Pelicula pelicula = new Pelicula(id_pelicula, id_categoria, titulo, 
+	                                         descripcion, duracion, url_portada, anio);
+	        boolean actualizado = peliculaDao.actualizar(pelicula);
+	        System.out.println("Resultado actualización: " + actualizado);
+	    }
+	    
+	    response.sendRedirect("registroPeliculasServlet");
+    
 	}
 
 }

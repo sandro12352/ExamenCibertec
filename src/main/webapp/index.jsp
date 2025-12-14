@@ -8,7 +8,7 @@
 </head>
 <body>
 	<%
-    response.sendRedirect("registroPelicula.jsp");
+    response.sendRedirect("login.jsp");
 		%>
 			
 </body>
